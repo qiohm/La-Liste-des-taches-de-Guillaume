@@ -1,6 +1,6 @@
 {
-  "short_name": "toDo App",
-  "name": "Liste des tâches - créée avec React",
+  "short_name": "Liste des Tâches (toDo App)",
+  "name": "Une application React pour une liste des tâches (toDoList)",
   "icons": [
     {
       "src": "favicon.ico",

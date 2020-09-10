@@ -1,42 +1,64 @@
-import React from "react"
+import React, { useState } from "react"
+import SelectTodos from "./SelectTodos"
+import TodosList from "./TodosList"
+import AddToDoForm from "./AddToDoForm"
+import { v4 as uuidv4 } from "uuid"
+const initialTodos = [
 
-const Todo = (props) => {
-  const { todo, deleteTodo, toggleCompleteTodo } = props;
-  const style = {
-    textDecoration: todo.isCompleted ? "line-through" : "none"
-  };
-  console.log(todo);
-  return (
-    <div className="shadow-sm border p-2 d-flex align-items-center justify-content-between mb-2">
-      <span style={style}>{todo.text}</span>
-      <div className="btn-group">
-        {todo.isCompleted ? (
-          <button
-            className="btn btn-light btn-sm btn-dark"
-            type="button"
-            onClick={() => toggleCompleteTodo(todo)}
-          >
-            Rétablir
-          </button>
-        ) : (
-          <button
-            className="btn btn-light btn-sm"
-            type="button"
-            onClick={() => toggleCompleteTodo(todo)}
-          >
-            Terminer
-          </button>
-        )}
-        <button
-          className="btn btn-danger btn-sm"
-          type="button"
-          onClick={() => deleteTodo(todo)}
-        >
-          Supprimer
-        </button>
-      </div>
-    </div>
-  );
-};
+]
+const Todos = (props) => {
+    const [filter, setFilter] = useState("notcompleted")
+    const [todos, setTodos] = useState(initialTodos)
+    const addTodo = (text) => {
+        const newTodo = {
+            text,
+            isCompleted: false,
+            id: uuidv4()
+        };
+        console.log(newTodo);
+        setTodos([...todos, newTodo])
+    };
 
-export default Todo
+    const deleteTodo = (task) => {
+        setTodos(todos.filter((el) => el !== task))
+    };
+
+    const toggleCompleteTodo = (task) => {
+        setTodos(
+            todos.map((el) => {
+                return {
+                    ...el,
+                    isCompleted: task.id === el.id ? !el.isCompleted : el.isCompleted
+                }
+            })
+        )
+    }
+    const filteredTodos = todos.filter((el) => {
+        if (filter === "completed") {
+            return el.isCompleted
+        }
+        if (filter === "notcompleted") {
+            return !el.isCompleted
+        }
+        return true
+    })
+
+    const completedCount = todos.filter((el) => el.isCompleted).length
+    return (
+        <>
+            <h2 className="text-center">
+                Ma liste de tâches ({completedCount} / {todos.length})
+      </h2>
+            <SelectTodos filter={filter} setFilter={setFilter} />
+            <TodosList
+                todos={filteredTodos}
+                deleteTodo={deleteTodo}
+                toggleCompleteTodo={toggleCompleteTodo}
+
+            />
+            <AddToDoForm addTodo={addTodo} setFilter={setFilter} />
+        </>
+    )
+}
+
+export default Todos
